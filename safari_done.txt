@@ -1,0 +1,154 @@
+
+/* STORY 1 */
+
+SELECT A.* , EA.date_entree
+FROM animaux AS A
+LEFT JOIN enclos_animaux AS EA
+	ON A.id = EA.id_animal
+WHERE EA.date_entree < '2003-01-01 00:00:00'
+
+/* STORY 2 */
+
+SELECT A.* , E.nom AS nom_enclos
+FROM animaux AS A
+LEFT JOIN enclos_animaux AS EA
+	ON A.id = EA.id_animal
+LEFT JOIN enclos AS E
+	ON EA.id_enclot = E.id
+WHERE A.espece = 'Girafe'
+
+/* STORY 3 */
+
+SELECT A.nom , A.espece, E.niveau 
+FROM animaux AS A
+
+JOIN enclos_animaux AS EA
+	ON EA.id_animal = A.id
+	
+JOIN enclos AS E
+	ON E.id = EA.id_enclot
+
+WHERE A.espece ='Orang-Outan' OR A.espece ='Lion'
+
+/* STORY 4 */
+
+SELECT A.*, EA.date_entree
+FROM animaux AS A
+LEFT JOIN enclos_animaux AS EA
+	ON A.id = EA.id_animal
+WHERE( A.espece = 'Elephant' AND EA.date_entree < '2010-12-01 00:00:00')
+	AND (A.taille > 129)
+
+    Ou
+
+    SELECT elephant_grand.*
+FROM ( SELECT A.* , EA.date_entree
+	FROM animaux AS A
+	LEFT JOIN enclos_animaux AS EA
+		ON A.id = EA.id_animal
+	WHERE() A.espece = 'Elephant' AND A.taille >129) AND EA.date_entree < '2010-12-01 00:00:00' ) AS elephant_grand
+		
+
+/* STORY 5 */
+
+SELECT E.* , COUNT(EA.id_animal) AS nombre_animaux
+FROM enclos AS E
+LEFT JOIN enclos_animaux AS EA
+	ON E.id = EA.id_enclot
+
+WHERE E.niveau ='moyen'
+
+/* STORY 6 */
+
+SELECT MIN(faucon.date_entree)AS faucon_agé, MAX(faucon.date_entree) AS faucon_jeune
+FROM ( 	
+	SELECT A.espece , A.nom, A.sexe, EA.date_entree
+	FROM animaux AS A
+	LEFT JOIN enclos_animaux AS EA
+		ON A.id = EA.id_animal
+	WHERE A.espece ='Faucon' AND A.sexe ='M' ) AS faucon
+
+/* STORY 7 */
+
+SELECT nom, espece, taille, sexe, date_entree,(Annee.apres-Annee.avant)*12 AS delai_mois
+FROM
+
+(SELECT A.* , EA.date_entree, YEAR(date_entree) AS avant, YEAR(NOW()) AS apres
+	FROM animaux AS A
+	LEFT JOIN enclos_animaux AS EA
+		ON A.id = EA.id_animal
+	WHERE A.espece ='Chèvre' OR A.espece= 'pinguin'
+	ORDER BY avant DESC ) AS Annee
+
+
+
+/* STORY 8 */
+
+/* STORY 9 */
+
+SELECT  YEAR(H.date) AS annee, SUM(H.montant) AS gains_annee
+		FROM historique AS H
+		GROUP BY annee 
+		ORDER BY DATE ASC
+
+/* STORY 10*/
+
+SELECT  YEAR(EA.date_entree) AS annee, COUNT(EA.id_animal) AS nombre_animaux
+		FROM enclos_animaux AS EA
+		GROUP BY annee 
+		ORDER BY date_entree ASC
+
+/* STORY 11 */
+
+SELECT nom, nom_enclos, sexe,(Annee.apres-Annee.avant) AS age, espece
+FROM
+
+(SELECT A.* , E.nom AS nom_enclos, EA.date_entree, YEAR(date_entree) AS avant, YEAR(NOW()) AS apres
+	FROM animaux AS A
+	LEFT JOIN enclos_animaux AS EA
+		ON A.id = EA.id_animal
+	LEFT JOIN enclos AS E
+		ON E.id = EA.id_enclot ) AS Annee
+ORDER BY age DESC
+LIMIT 1
+
+
+
+/* STORY 12 */
+
+SELECT nom, nom_enclos, sexe,(Annee.apres-Annee.avant) AS age, espece
+FROM
+
+(SELECT A.* , E.nom AS nom_enclos, EA.date_entree, YEAR(date_entree) AS avant, YEAR(NOW()) AS apres
+	FROM animaux AS A
+	LEFT JOIN enclos_animaux AS EA
+		ON A.id = EA.id_animal
+	LEFT JOIN enclos AS E
+		ON E.id = EA.id_enclot ) AS Annee
+ORDER BY age ASC
+LIMIT 1
+
+
+
+/* STORY 13 */
+
+SELECT enclos_von.nom_enclos, enclos_von.nom, enclos_von.espece, enclos_von.taille, enclos_von.sexe, (enclos_von.apres-enclos_von.avant) AS age
+FROM
+(SELECT A.* , E.nom AS nom_enclos, EA.date_entree, YEAR(date_entree) AS avant, YEAR(NOW()) AS apres
+	FROM animaux AS A
+	LEFT JOIN enclos_animaux AS EA
+		ON  A.id = EA.id_animal
+	LEFT JOIN enclos AS E
+		ON E.id = EA.id_enclot
+	WHERE E.nom = 'VonRueden') AS enclos_von
+WHERE sexe ='F' AND (apres-avant) > 4
+	
+
+
+
+
+/* STORY 14 */
+
+
+
+
